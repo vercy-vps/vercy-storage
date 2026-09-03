@@ -19,6 +19,12 @@ Official TypeScript/JavaScript SDK for **Vercy Cloud Storage**, enabling develop
 npm install @vercy/storage
 ```
 
+Or if you encounter peer dependency conflicts:
+
+```bash
+npm install @vercy/storage --legacy-peer-deps
+```
+
 ---
 
 ## Quickstart
