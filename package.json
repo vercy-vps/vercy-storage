@@ -1,6 +1,6 @@
 {
   "name": "@vercy/storage",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Official TypeScript SDK for Vercy Cloud storage",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
