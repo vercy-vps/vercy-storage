@@ -280,19 +280,35 @@ export async function head(
     cleanPath = parsed.pathname.replace(/^\/+/, '');
   } catch {}
 
-  const result = await list({
-    prefix: cleanPath,
-    limit: 1,
-    endpoint: options.endpoint,
-    token: options.token,
+  const token = resolveToken(options.token);
+  const baseEndpoint = options.endpoint || getApiEndpoint();
+  const endpoint = new URL(baseEndpoint, typeof window !== 'undefined' ? window.location.origin : undefined);
+  endpoint.searchParams.set('pathname', cleanPath);
+
+  const response = await fetch(endpoint.toString(), {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
-  const match = result.files.find((f) => f.pathname === cleanPath);
-  if (!match) {
-    throw new NotFoundError(`File "${cleanPath}" was not found in storage.`);
+  if (!response.ok) {
+    let errorMsg = `File "${cleanPath}" was not found in storage.`;
+    try {
+      const errJson = await response.json();
+      if (errJson.error) errorMsg = errJson.error;
+    } catch {}
+
+    if (response.status === 404) {
+      throw new NotFoundError(errorMsg);
+    }
+    if (response.status === 401) {
+      throw new UnauthorizedError(errorMsg);
+    }
+    throw new VercyStorageError(errorMsg, response.status);
   }
 
-  return match;
+  return (await response.json()) as StorageFile;
 }
 
 /**

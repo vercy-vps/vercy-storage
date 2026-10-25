@@ -20,8 +20,7 @@ export interface PutOptions {
   endpoint?: string;
 
   /**
-   * Automatically append a random suffix to prevent file collisions.
-   * Default: true.
+   * @deprecated Unique collision-free IDs are generated automatically.
    */
   addRandomSuffix?: boolean;
 
@@ -52,6 +51,11 @@ export interface PutStorageResult {
    * The relative pathname stored on Vercy (e.g. 'avatars/fil...png').
    */
   pathname: string;
+
+  /**
+   * The original human-readable filename passed during upload (e.g. 'avatar.png').
+   */
+  originalFilename?: string;
 
   /**
    * MIME content type of the file.
@@ -99,6 +103,7 @@ export interface ListOptions {
 export interface StorageFile {
   id: string;
   pathname: string;
+  originalFilename?: string;
   url: string;
   downloadUrl: string;
   size: number;
